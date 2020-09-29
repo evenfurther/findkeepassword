@@ -1,0 +1,20 @@
+name: findkeepassword
+author: Samuel Tardieu <sam@rfc1149.net>
+version: 1.0.0
+about: Find your lost keepass master password by trying many from a list
+args:
+  - key-file:
+      short: -k
+      long: --key-file
+      takes_value: true
+      value_name: FILE
+      help: The optional key file
+  - verbose:
+      short: -v
+      help: Display attempts
+  - FILE:
+      help: The kdbx file
+      required: true
+  - PASSWORDS:
+      help: The file containing the list of possible passwords
+      required: true
