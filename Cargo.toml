@@ -8,4 +8,4 @@ edition = "2018"
 kdbx4 = "0.4.2"
 clap = {version = "2.33.3", features = ["yaml"]}
 anyhow = "1.0.36"
-rayon = "1.4.0"
+rayon = "1.5.0"
