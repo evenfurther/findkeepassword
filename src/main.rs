@@ -1,13 +1,16 @@
 use anyhow::Error;
-use clap::{load_yaml, App};
+use clap::{app_from_crate, arg};
 use kdbx4::{CompositeKey, Kdbx4};
 use rayon::prelude::*;
 use std::fs::File;
 use std::io::{self, BufRead};
 
 fn main() -> Result<(), Error> {
-    let yaml = load_yaml!("cli.yml");
-    let matches = App::from_yaml(yaml).get_matches();
+    let matches = app_from_crate!()
+        .arg(arg!(-k --"key-file" [FILE] "The optional key file"))
+        .arg(arg!(<FILE> "The kdbx file"))
+        .arg(arg!(<PASSWORDS> "The file containing the list of possible passwords"))
+        .get_matches();
     let file = File::open(matches.value_of("PASSWORDS").unwrap())?;
     let key_file = matches.value_of("key-file");
     key_file.map(|name| File::open(name).expect("cannot open key file"));
