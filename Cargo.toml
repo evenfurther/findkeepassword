@@ -6,6 +6,6 @@ edition = "2021"
 
 [dependencies]
 kdbx4 = "0.5.1"
-clap = {version = "3.0.4", features = ["cargo"]}
+clap = {version = "3.0.9", features = ["cargo"]}
 anyhow = "1.0.52"
 rayon = "1.5.1"
