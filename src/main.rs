@@ -1,12 +1,12 @@
 use anyhow::Error;
-use clap::{app_from_crate, arg};
+use clap::arg;
 use kdbx4::{CompositeKey, Kdbx4};
 use rayon::prelude::*;
 use std::fs::File;
 use std::io::{self, BufRead};
 
 fn main() -> Result<(), Error> {
-    let matches = app_from_crate!()
+    let matches = clap::command!()
         .arg(arg!(-k --"key-file" [FILE] "The optional key file"))
         .arg(arg!(<FILE> "The kdbx file"))
         .arg(arg!(<PASSWORDS> "The file containing the list of possible passwords"))
