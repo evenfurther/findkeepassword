@@ -1,37 +1,51 @@
 use anyhow::Error;
-use clap::arg;
+use clap::Parser;
 use kdbx4::{CompositeKey, Kdbx4};
 use rayon::prelude::*;
 use std::fs::File;
 use std::io::{self, BufRead};
+use std::path::{Path, PathBuf};
+
+#[derive(Parser)]
+#[clap(version, author, about)]
+struct Args {
+    // The optional key file
+    #[clap(short, long)]
+    key_file: Option<PathBuf>,
+    // The kdbx file
+    file: PathBuf,
+    // The file containing the list of possible passwords
+    passwords: PathBuf,
+    // Verbose output
+    #[clap(short, long)]
+    verbose: bool,
+}
 
 fn main() -> Result<(), Error> {
-    let matches = clap::command!()
-        .arg(arg!(-k --"key-file" [FILE] "The optional key file"))
-        .arg(arg!(<FILE> "The kdbx file"))
-        .arg(arg!(<PASSWORDS> "The file containing the list of possible passwords"))
-        .get_matches();
-    let file = File::open(matches.value_of("PASSWORDS").unwrap())?;
-    let key_file = matches.value_of("key-file");
-    key_file.map(|name| File::open(name).expect("cannot open key file"));
-    let kdbx = matches.value_of("FILE").unwrap();
-    let verbose = matches.is_present("verbose");
-    let passwords = io::BufReader::new(file)
+    let args = Args::parse();
+    args.key_file
+        .as_ref()
+        .map(|name| File::open(&name).expect("cannot open key file"));
+    let passwords = io::BufReader::new(File::open(&args.passwords)?)
         .lines()
         .collect::<Result<Vec<_>, _>>()?;
-    match find_password(kdbx, passwords, key_file, verbose) {
+    match find_password(&args.file, passwords, args.key_file.as_ref(), args.verbose) {
         Some(p) => println!("Found working password: {}", p),
         None => println!("No working password found"),
     }
     Ok(())
 }
 
-fn find_password(
-    file: &str,
+fn find_password<P1, P2>(
+    file: &P1,
     passwords: Vec<String>,
-    key_file: Option<&str>,
+    key_file: Option<&P2>,
     verbose: bool,
-) -> Option<String> {
+) -> Option<String>
+where
+    P1: AsRef<Path> + Sync,
+    P2: AsRef<Path> + Sync,
+{
     passwords.into_par_iter().find_any(|p| {
         if verbose {
             println!("Checking {}", p);
@@ -40,7 +54,11 @@ fn find_password(
     })
 }
 
-fn is_right_password(file: &str, password: &str, key_file: Option<&str>) -> bool {
+fn is_right_password<P1, P2>(file: &P1, password: &str, key_file: Option<&P2>) -> bool
+where
+    P1: AsRef<Path>,
+    P2: AsRef<Path>,
+{
     let key = CompositeKey::new(Some(password), key_file).unwrap();
     Kdbx4::open(file, key).is_ok()
 }
