@@ -7,6 +7,6 @@ description = "Find a forgotten kdbx 4 password by trying many of them"
 
 [dependencies]
 kdbx4 = "0.5.1"
-clap = {version = "3.1.12", features = ["derive"]}
+clap = {version = "3.1.14", features = ["derive"]}
 anyhow = "1.0.57"
 rayon = "1.5.2"
