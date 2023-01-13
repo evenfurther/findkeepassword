@@ -25,12 +25,12 @@ fn main() -> Result<(), Error> {
     let args = Args::parse();
     args.key_file
         .as_ref()
-        .map(|name| File::open(&name).expect("cannot open key file"));
+        .map(|name| File::open(name).expect("cannot open key file"));
     let passwords = io::BufReader::new(File::open(&args.passwords)?)
         .lines()
         .collect::<Result<Vec<_>, _>>()?;
     match find_password(&args.file, passwords, args.key_file.as_ref(), args.verbose) {
-        Some(p) => println!("Found working password: {}", p),
+        Some(p) => println!("Found working password: {p}"),
         None => println!("No working password found"),
     }
     Ok(())
@@ -48,7 +48,7 @@ where
 {
     passwords.into_par_iter().find_any(|p| {
         if verbose {
-            println!("Checking {}", p);
+            println!("Checking {p}");
         };
         is_right_password(file, p, key_file)
     })
