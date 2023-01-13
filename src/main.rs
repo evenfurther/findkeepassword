@@ -1,4 +1,3 @@
-use anyhow::Error;
 use clap::Parser;
 use kdbx4::{CompositeKey, Kdbx4};
 use rayon::prelude::*;
@@ -21,7 +20,8 @@ struct Args {
     verbose: bool,
 }
 
-fn main() -> Result<(), Error> {
+fn main() -> eyre::Result<()> {
+    color_eyre::install()?;
     let args = Args::parse();
     args.key_file
         .as_ref()
