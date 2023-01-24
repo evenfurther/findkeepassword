@@ -583,8 +583,9 @@ dependencies = [
 
 [[package]]
 name = "kdbx-rs"
-version = "0.3.0"
-source = "git+https://gitlab.com/tonyfinn/kdbx-rs#2007bee625c3d77aa1fea43d9270c7d53f6927fd"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "89edc6d056132c820c2cafc5764b61d9ba7352f8b8dacfbeff4c4d3abb84bc59"
 dependencies = [
  "aes",
  "base64",
