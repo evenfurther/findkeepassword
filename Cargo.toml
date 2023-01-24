@@ -4,6 +4,7 @@ version = "0.1.0"
 authors = ["Samuel Tardieu <sam@rfc1149.net>"]
 edition = "2021"
 description = "Find a forgotten kdbx 4 password by trying many of them"
+rust-version = "1.64.0"
 
 [dependencies]
 clap = { version = "4.1.3", features = ["derive"] }
