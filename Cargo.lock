@@ -584,7 +584,7 @@ dependencies = [
 [[package]]
 name = "kdbx-rs"
 version = "0.3.0"
-source = "git+https://gitlab.com/samueltardieu/kdbx-rs?branch=argon2id#8994dce8282df2f63e6c801453d40b608c193ded"
+source = "git+https://gitlab.com/tonyfinn/kdbx-rs#2007bee625c3d77aa1fea43d9270c7d53f6927fd"
 dependencies = [
  "aes",
  "base64",
