@@ -9,5 +9,5 @@ description = "Find a forgotten kdbx 4 password by trying many of them"
 clap = { version = "4.1.1", features = ["derive"] }
 color-eyre = "0.6.2"
 eyre = "0.6.8"
-kdbx4 = "0.5.1"
+kdbx-rs = { git = "https://gitlab.com/samueltardieu/kdbx-rs", branch = "argon2id" }
 rayon = "1.6.1"

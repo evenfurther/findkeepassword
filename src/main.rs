@@ -1,5 +1,6 @@
 use clap::Parser;
-use kdbx4::{CompositeKey, Kdbx4};
+use eyre::Context;
+use kdbx_rs::CompositeKey;
 use rayon::prelude::*;
 use std::fs::File;
 use std::io::{self, BufRead};
@@ -23,42 +24,46 @@ struct Args {
 fn main() -> eyre::Result<()> {
     color_eyre::install()?;
     let args = Args::parse();
-    args.key_file
-        .as_ref()
-        .map(|name| File::open(name).expect("cannot open key file"));
-    let passwords = io::BufReader::new(File::open(&args.passwords)?)
-        .lines()
-        .collect::<Result<Vec<_>, _>>()?;
-    match find_password(&args.file, passwords, args.key_file.as_ref(), args.verbose) {
+
+    let key_file = args
+        .key_file
+        .map(std::fs::read)
+        .transpose()
+        .context("Cannot open key file")?;
+    let passwords =
+        io::BufReader::new(File::open(&args.passwords).context("Cannot open passwords file")?)
+            .lines()
+            .collect::<Result<Vec<_>, _>>()
+            .context("Error reading passwords file")?;
+    match find_password(&args.file, passwords, key_file, args.verbose) {
         Some(p) => println!("Found working password: {p}"),
         None => println!("No working password found"),
     }
     Ok(())
 }
 
-fn find_password<P1, P2>(
-    file: &P1,
+fn find_password<P>(
+    file: &P,
     passwords: Vec<String>,
-    key_file: Option<&P2>,
+    key_file: Option<Vec<u8>>,
     verbose: bool,
 ) -> Option<String>
 where
-    P1: AsRef<Path> + Sync,
-    P2: AsRef<Path> + Sync,
+    P: AsRef<Path> + Sync,
 {
     passwords.into_par_iter().find_any(|p| {
         if verbose {
             println!("Checking {p}");
         };
-        is_right_password(file, p, key_file)
+        is_right_password(file, p, key_file.clone())
     })
 }
 
-fn is_right_password<P1, P2>(file: &P1, password: &str, key_file: Option<&P2>) -> bool
+fn is_right_password<P>(file: &P, password: &str, key_file: Option<Vec<u8>>) -> bool
 where
-    P1: AsRef<Path>,
-    P2: AsRef<Path>,
+    P: AsRef<Path>,
 {
-    let key = CompositeKey::new(Some(password), key_file).unwrap();
-    Kdbx4::open(file, key).is_ok()
+    let key = CompositeKey::new(Some(password.to_owned()), key_file);
+    let db = kdbx_rs::open(file).context("Cannot open database").unwrap();
+    db.unlock(&key).is_ok()
 }
