@@ -7,7 +7,7 @@ description = "Find a forgotten kdbx 4 password by trying many of them"
 rust-version = "1.64.0"
 
 [dependencies]
-clap = { version = "4.2.0", features = ["derive"] }
+clap = { version = "4.2.1", features = ["derive"] }
 color-eyre = "0.6.2"
 eyre = "0.6.8"
 kdbx-rs = "0.4.0"
