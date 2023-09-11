@@ -1,8 +1,6 @@
 on:
-  push:
-    branches:
-      - staging
-      - trying
+  merge_group:
+  pull_request:
 
 name: Continuous integration
 
