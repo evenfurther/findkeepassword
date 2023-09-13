@@ -1,4 +1,7 @@
 on:
+  push:
+    branches:
+      - renovate/**
   merge_group:
   pull_request:
 
