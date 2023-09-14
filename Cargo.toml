@@ -10,7 +10,7 @@ rust-version = "1.64.0"
 clap = { version = "4.4.3", features = ["derive"] }
 color-eyre = "0.6.2"
 eyre = "0.6.8"
-kdbx-rs = "0.4.0"
+kdbx-rs = "0.5.0"
 rayon = "1.7.0"
 
 # Not a direct dependency, but prevent kdbx-rs from pulling time 1.x
