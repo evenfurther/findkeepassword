@@ -9,6 +9,6 @@ rust-version = "1.64.0"
 [dependencies]
 clap = { version = "4.4.8", features = ["derive"] }
 color-eyre = "0.6.2"
-eyre = "0.6.10"
+eyre = "0.6.11"
 kdbx-rs = "0.5.1"
 rayon = "1.8.0"
